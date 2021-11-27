@@ -1,0 +1,17 @@
+
+.App {
+  text-align: center;
+  height: 100%;
+}
+Button{
+  margin-left: 5px !important;
+  margin-top: 10px !important;
+  width: max-content !important;
+}
+.send-icon{
+  margin-left: 5px !important;
+}
+
+
+
+
