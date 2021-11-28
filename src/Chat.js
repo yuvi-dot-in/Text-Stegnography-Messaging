@@ -5,52 +5,66 @@ import { SendRounded } from '@material-ui/icons'
 import { List, Button, FormControl, Input, InputLabel } from '@material-ui/core'
 import db from './firebase'
 import firebase from 'firebase'
-import { hideText, decode } from "./Stegno"
+import Encode from './encode';
+import Decode from './decode';
 
 function Chat(props) {
-  const [todos, setTodos] = useState([]);
+  const [msgPackets, setMsgPackets] = useState([]);
   const [input, setInput] = useState('');
   const [image, setImage] = useState(null);
-  const [encryptedImage, setEncryptedImage] = useState(null);
-  const [temp, setTemp] = useState('')
+  const [encryptedImageUri, setEncryptedImageUri] = useState(null);
 
   useEffect(() => {
     db.collection(props.roomCode).orderBy('timestamp', 'desc').onSnapshot(snapshot => {
-      setTodos(snapshot.docs.map(doc => ({ id: doc.id, todo: doc.data().Text, username: doc.data().username })))
+      setMsgPackets(snapshot.docs.map(doc => ({ id: doc.id, Encoded: doc.data().Encoded, username: doc.data().username })))
     })
 
+
+
   }, []);
+
+
 
   const readUrl = (e) => {
     if (e.target.files && e.target.files[0]) {
       let reader = new FileReader();
+
       reader.onload = (e) => {
-        // console.log(e.target.result)
+
         // console.log(e.target.readAsText)
         setImage(e.target.result);
       };
       reader.readAsDataURL(e.target.files[0]);
+
     }
+
+
+
   }
 
   const handleHideText = () => {
-    var result = hideText(input, image);
-    setEncryptedImage(result);
-    console.log(decode(result));
+    // var result = hideText(input, image);
+
+    var sampleMsg = "Hello";
+    setEncryptedImageUri(Encode(input, image));
+
+
+
   }
 
   const addTodo = (event) => {
     event.preventDefault()
     if (input.length > 0) {
       db.collection(props.roomCode).add({
-        Text: input,
+        Encoded: encryptedImageUri,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         username: props.userName
       })
-      setTodos([...todos, input])
+      setMsgPackets([...msgPackets, input])
 
     }
     setInput('');
+    setEncryptedImageUri('')
   }
   return (
     <div className='chat'>
@@ -60,7 +74,7 @@ function Chat(props) {
       }
       <form>
 
-        <Button variant="contained" component='label'>
+        {!image && <Button variant="contained" component='label'>
           Upload File
           <input
             type="file"
@@ -69,30 +83,34 @@ function Chat(props) {
             onChange={readUrl}
 
           />
-        </Button>
-        {image && <Button onClick={handleHideText} variant="outlined" color="primary">
-          Hide
-        </Button>}<br /><br />
+        </Button>}
+        <br /><br />
         <FormControl>
           <InputLabel htmlFor="my-input">Type here</InputLabel>
           <Input value={input} autoComplete='off' onChange={event => setInput(event.target.value)} id="my-input" aria-describedby="my-helper-text" />
         </FormControl>
+        {image && (!encryptedImageUri) && <Button onClick={handleHideText} variant="outlined" color="primary">
+          Hide
+        </Button>}
         <Button onClick={addTodo} type='submit' variant="contained" color="primary">
           Send  <SendRounded className='send-icon' />
         </Button><br />
 
-        {/* <input value={input} onChange={event => setInput(event.target.value)} /> */}
-        {/* <button type='submit' onClick={addTodo} >Add Todo</button> */}
+
+
 
       </form>
 
-      {/* <List>
-        {todos.map((todo) => (
-          <Todo roomCode={props.roomCode} userName={props.userName} todo={todo} />
+      {image && <List>
+        {msgPackets.map((packet) => (
+          <Todo roomCode={props.roomCode} orgImage={image} userName={props.userName} todo={packet} />
         ))}
-      </List> */}
-      {encryptedImage &&
-        <><h3>Your Image</h3><img src={encryptedImage} width="50%" alt="preview image" /></>
+      </List>}
+      {encryptedImageUri &&
+        <><h3>Your Text is Encrypted</h3>
+          <img src={encryptedImageUri} width="50%" alt="preview image" />
+          <canavas hidden></canavas>
+        </>
       }
     </div>
   )
