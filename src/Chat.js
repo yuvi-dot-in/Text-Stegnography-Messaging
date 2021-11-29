@@ -100,7 +100,7 @@ function Chat(props) {
 
 
       </form>
-
+      {/* to display messages */}
       {image && <List>
         {msgPackets.map((packet) => (
           <Todo roomCode={props.roomCode} orgImage={image} userName={props.userName} todo={packet} />

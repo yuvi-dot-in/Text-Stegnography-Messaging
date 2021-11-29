@@ -13,10 +13,10 @@ function textToBin(text) {
     return output.join(" ");
 }
 const Encode = (message, image) => {
-    var binMessage = textToBin(message);
+    var binMessage = textToBin(message);   //message converted to binary
 
-    console.log("while Encoding" + binMessage);
-    console.log(typeof (binMessage));
+    console.log("Mesage converted to binary " + binMessage);
+
     image = loadImage(image);
     var shadowCanvas = document.createElement('canvas'),
         shadowCtx = shadowCanvas.getContext('2d');
@@ -27,9 +27,10 @@ const Encode = (message, image) => {
 
     var imageData = shadowCtx.getImageData(0, 0, shadowCanvas.width, shadowCanvas.height),
         data = imageData.data;
+    console.log(imageData);
 
 
-    var i, k, done;
+    var i;
     var msgCount = 0;
     for (i = 0; i < data.length; i += 4) {
         // console.log(imageData.data[i]);
@@ -56,8 +57,10 @@ const Encode = (message, image) => {
 
         // imageData.data[i
     }
+    console.log("after Encoding the message")
+    console.log(imageData.data);
     shadowCtx.putImageData(imageData, 0, 0);
-    return shadowCanvas.toDataURL();
+    return shadowCanvas.toDataURL(); //this will return the base64 of the canvas image
 }
 
 export default Encode

@@ -7,6 +7,8 @@ function loadImage(url) {
 }
 const Decode = (image, orgImage) => {
   // Handle image url
+  //image - from firebase(Encoded Image)
+  //orgImage - from reciever(original image uploaded by the reciever)
   if (image && orgImage) {
     image = loadImage(image);
     orgImage = loadImage(orgImage);
@@ -15,6 +17,7 @@ const Decode = (image, orgImage) => {
   else {
     return "Error in LOADING IMAGES";
   }
+  //Two canvas one for orginal image and ecoded image
   var canvas1 = document.createElement('canvas'),
     ctx1 = canvas1.getContext('2d');
   var canvas2 = document.createElement('canvas'),
@@ -46,7 +49,7 @@ const Decode = (image, orgImage) => {
     }
     else if (txtData.data[i] - imageData.data[i] == 1) {
       //1
-      binMessage = binMessage.concat("1");
+      binMessage = binMessage + "1";
 
     }
     else if (txtData.data[i] - imageData.data[i] == -1) {
