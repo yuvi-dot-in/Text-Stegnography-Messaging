@@ -59,6 +59,9 @@ function App() {
             <ListItemText primary='Use the same code when you come back again or If refreshed your page' secondary='Your previous chat will be loaded' />
           </ListItem>
           <ListItem>
+            <ListItemText primary='Upload Carrier Image, Use the same image to retrive message by reciever' />
+          </ListItem>
+          <ListItem>
             <ListItemText primary='Delete the chat if you dont need it in future' />
           </ListItem>
 
